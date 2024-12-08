@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوت طمني</title>
+    <style>
+        /*  كود حق خلفية الموقع*/
+        html, body {
+            height: 100%;
+            margin: 0;
+            background-image: url('a.jpg'); 
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        /* كود حق المربع*/
+        .page {
+            display: none;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 500px; 
+            height: 300px;
+            overflow: auto; 
+            text-align: center;
+        }
+
+        .page.active {
+            display: block;
+        }
+ /*كود حق لون الكلام وحجمه*/
+        button, .symptoms button {
+            font-size: 16px;
+            color: white;
+            background-color: #6d8ce7;
+            border: none;
+            padding: 10px 20px; 
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover, .symptoms button:hover {
+            background-color: #0c9cdf;
+        }
+
+        .symptoms {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .diagnosis-btn {
+            background-color: #ffcccc;
+            color: #333;
+            font-size: 16px;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .diagnosis-btn:hover {
+            background-color: #ff9999;
+        }
+
+        .diagnosis {
+            font-size: 24px;
+            color: #df7777;
+            margin-top: 20px;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        
+        .buttons-container {
+            display: flex;
+            gap: 10px; 
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        
+        .treatment {
+            font-size: 26px; 
+            color: #3366ff; 
+            margin-top: 20px;
+        }
+
+       
+        @media (max-width: 600px) {
+            .page {
+                width: 90%; 
+                height: auto; 
+            }
+
+            .symptoms {
+                grid-template-columns: 1fr; 
+            }
+
+            .buttons-container {
+                flex-direction: column; 
+            }
+   
+        }
+        footer {
+    margin-top: 20px;
+    font-size: 20px; 
+    color: #cb7272;
+    text-align: center; 
+    padding: 15px 0;
+}
+    </style>
+</head>
+<body>
+    <!--كلام الصفحه الاولى-->
+    <div class="page active" id="page1">
+        <h1>مرحبًا بك في بوت طمني، هل تريدين المساعدة في التشخيص؟</h1>
+        <button onclick="showPage('page2')">نعم أريد</button>
+      
+    </div>
+
+    <!-- كلام الصفحة الثانية -->
+    <div class="page" id="page2">
+        <h1>الرجاء اختيار أعراضك:</h1>
+        <form id="diagnosisForm">
+            <div class="symptoms">
+                <label><input type="checkbox" name="symptoms" value="fever"> الحرارة</label>
+                <label><input type="checkbox" name="symptoms" value="runny_nose"> سيلان في الأنف</label>
+                <label><input type="checkbox" name="symptoms" value="sore_throat"> الألم في الحلق</label>
+                <label><input type="checkbox" name="symptoms" value="breathing"> ضيق في التنفس</label>
+                <label><input type="checkbox" name="symptoms" value="thirst"> الشعور بالعطش</label>
+                <label><input type="checkbox" name="symptoms" value="stomach"> اضطراب المعدة</label>
+            </div>
+            <div class="buttons-container">
+                <button class="diagnosis-btn" type="button" onclick="diagnose()">ابدأ التشخيص</button>
+                <button type="button" onclick="clearSymptoms()">مسح الأعراض</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- كلام الصفحة الثالثة -->
+    <div class="page" id="page3">
+        <h1>نتيجة التشخيص</h1>
+        <p class="diagnosis" id="result">...</p>
+        <p class="treatment" id="treatment">...</p> 
+        <button onclick="showPage('page1')">العودة إلى الصفحة الرئيسية</button>
+    </div>
+
+    <script>
+      
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+          
+            if (pageId === 'page1') {
+                clearSymptoms();
+            }
+        }
+
+        
+        function clearSymptoms() {
+            const checkboxes = document.querySelectorAll('input[name="symptoms"]');
+            checkboxes.forEach(checkbox => checkbox.checked = false);
+        }
+
+        // الكود الي يشخص
+        function diagnose() {
+            const symptoms = Array.from(document.querySelectorAll('input[name="symptoms"]:checked')).map(input => input.value);
+            
+            
+            if (symptoms.length === 0) {
+                alert("يرجى اختيار أعراضك قبل بدء التشخيص.");
+                return;  
+            }
+
+            let diagnosis = "غير معروف";
+            let treatment = "";
+
+        
+            if (symptoms.includes("fever") && symptoms.includes("runny_nose") && symptoms.includes("sore_throat")) {
+                diagnosis = "الزكام";
+                treatment = "العلاج: أخذ حبة خافض حرارة (بنادول) كل ٨ ساعات ووضع كمادات باردة.";
+            } else if (symptoms.includes("breathing")) {
+                diagnosis = "ارتفاع الضغط";
+                treatment ="العلاج: التقليل من الملح والدهون في الاطعمة , و ممارسة الرياضة.";
+            } else if (symptoms.includes("thirst")) {
+                diagnosis = "ارتفاع السكر";
+                treatment = "العلاج: تقليل من تناول السكر، والاكثار من شرب الماء من أجل تخفيف ارتفاع السكر.";
+            } else if (symptoms.includes("stomach")) {
+                diagnosis = "التسمم الغذائي";
+                treatment = "العلاج: أخذ مضاد حيوي، وتناول أطعمة خفيفة على المعدة.";
+            }
+
+           
+            document.getElementById("result").innerText = `أنتي مصابة بـ: ${diagnosis}`;
+            document.getElementById("treatment").innerText = treatment;
+            showPage('page3');
+        }
+    </script>
+</body>
+</html>
+
+
+
+
